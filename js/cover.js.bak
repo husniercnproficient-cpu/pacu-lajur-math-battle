@@ -1,0 +1,16 @@
+const cover = document.getElementById('cover');
+const clickSound = document.getElementById('clickSound');
+
+cover.addEventListener('click', () => {
+  // Play sound
+  clickSound.currentTime = 0;
+  clickSound.play();
+
+  // Fade out animation
+  cover.classList.add('fade-out');
+
+  // Redirect setelah animasi selesai
+  setTimeout(() => {
+    window.location.href = 'setting.html';
+  }, 700);
+});

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Balap Perahu Edukasi</title>
+<style>
+html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:sans-serif;
+    background:#a0e0ff;
+    touch-action: manipulation;
+}
+
+/* Track air */
+#track {
+    position: relative;
+    width: 100%;
+    height: 40%;
+    background: #4db8ff;
+    border-top:3px solid #0077b3;
+    border-bottom:3px solid #0077b3;
+    overflow:hidden;
+    margin-top:5%;
+}
+
+/* Riak air */
+.wave, .wave2 {
+    position:absolute; top:0; left:0; width:200%; height:100%;
+    background-repeat: repeat-x;
+    background-size: 400px 60px;
+}
+
+.wave {
+    background-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60">\
+<path d="M0 30 Q50 10 100 30 T400 30" fill="transparent" stroke="white" stroke-width="3"/>\
+</svg>');
+    animation: waveMove 8s linear infinite;
+}
+
+.wave2 {
+    background-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60">\
+<path d="M0 30 Q50 50 100 30 T400 30" fill="transparent" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>\
+</svg>');
+    animation: waveMove 12s linear infinite reverse;
+}
+
+@keyframes waveMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Perahu */
+.car {
+    width:40%; max-width:200px;
+    height:80%; max-height:150px;
+    position:absolute;
+    border-radius:5px;
+    transition: left 0.4s ease;
+    animation: float 2s ease-in-out infinite;
+}
+
+#car1 {
+    top:0%;
+    left:-3%;
+    background: url('../images/perahu_merah_bg.png') no-repeat center/contain;
+}
+
+#car2 {
+    top:33%;
+    left:-3%;
+    background: url('../images/perahu_biru_bg.png') no-repeat center/contain;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+/* Garis finish vertikal */
+#finishLine {
+    position:absolute;
+    right:0; top:0;
+    width:60px; height:100%;
+    border:3px solid white;
+    box-sizing:border-box;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    color:white;
+    writing-mode: vertical-rl;
+    text-align:center;
+    font-size:1.5em;
+}
+
+/* Tulisan pemenang di tengah layar */
+#winnerText {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size:8vw;
+    font-weight:bold;
+    color: #ff0000;
+    text-align:center;
+    display:none;
+}
+
+/* Pertanyaan di bawah layar */
+#questionCenter {
+    position: fixed;
+    bottom:0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size:5vw;
+    font-weight:bold;
+    color:#333;
+    text-align:center;
+    padding:0.5em 1em;
+    background:white;
+    border-radius:0;
+    width:80px;  
+}
+
+/* Tombol jawaban horizontal */
+.choice-btn {
+    font-size:4vw;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    transition: background 0.2s, opacity 0.2s;
+    font-weight: bold;
+}
+
+#choicesRed, #choicesBlue {
+    position:fixed;
+    bottom:15%;
+    display:flex;
+    flex-direction:row;
+    gap:2vw;
+    font-weight: bold;
+}
+
+#choicesRed { left:5%; }
+#choicesBlue { right:5%; }
+
+/* Hamburger Menu */
+#hamburger {
+    position: fixed;
+    top:1%;
+    right:1%;
+    width:40px;
+    height:35px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor:pointer;
+    z-index:300;
+}
+
+.bar {
+    height:5px;
+    width:100%;
+    background:#fff;
+    border-radius:3px;
+}
+
+#menuItems {
+    position: fixed;
+    top:60px;
+    right:10px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    z-index: 300;
+}
+
+#menuItems button {
+    background:none;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    font-size:1rem;
+    cursor:pointer;
+    text-align:left;
+}
+
+#menuItems button:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Canvas kembang api */
+#fireworksCanvas {
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    z-index:200;
+}
+</style>
+</head>
+<body>
+
+<canvas id="fireworksCanvas"></canvas>
+
+<div id="track">
+    <div class="wave"></div>
+    <div class="wave2"></div>
+    <div id="car1" class="car"></div>
+    <div id="car2" class="car"></div>
+    <div id="finishLine">FINISH</div>
+</div>
+
+<div id="winnerText"></div>
+<div id="questionCenter"></div>
+<div id="choicesRed"></div>
+<div id="choicesBlue"></div>
+
+<!-- Hamburger menu -->
+<div id="hamburger">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+<div id="menuItems">
+    <button id="menuHome">Home</button>
+    <button id="menuRefresh">New Game</button>
+    <button id="menuSettings">Settings</button>
+</div>
+
+<script>
+// Hamburger toggle
+const hamburger = document.getElementById('hamburger');
+const menuItems = document.getElementById('menuItems');
+hamburger.addEventListener('click', ()=>{
+    menuItems.style.display = (menuItems.style.display==='flex') ? 'none' : 'flex';
+});
+
+// Menu item actions
+document.getElementById('menuHome').addEventListener('click', ()=>{ window.location.href='index.html'; });
+document.getElementById('menuRefresh').addEventListener('click', ()=>{
+    pos1=0; pos2=0; car1.style.left='-3%'; car2.style.left='-3%';
+    currentQuestion = generateQuestion();
+    showQuestion();
+    menuItems.style.display='none';
+});
+document.getElementById('menuSettings').addEventListener('click', ()=>{ window.location.href='setting.html'; });
+
+// ====== Game Script =======
+let pos1=0, pos2=0;
+let trackWidth=document.getElementById('track').offsetWidth;
+const step=trackWidth*0.08;
+
+let car1=document.getElementById('car1');
+let car2=document.getElementById('car2');
+let questionCenter=document.getElementById('questionCenter');
+let winnerText=document.getElementById('winnerText');
+
+const choicesRed=document.getElementById('choicesRed');
+const choicesBlue=document.getElementById('choicesBlue');
+
+let answeredRed=false, answeredBlue=false;
+let fastest='';
+
+function generateQuestion(){
+    let a=Math.ceil(Math.random()*10);
+    let b=Math.ceil(Math.random()*10);
+    return {question:`${a}×${b}`, answer: a*b};
+}
+
+let currentQuestion = generateQuestion();
+showQuestion();
+
+function createButton(player, ans){
+    const btn = document.createElement('button');
+    btn.textContent = ans;
+    btn.className = 'choice-btn';
+    btn.style.background = (player === 'red') ? 'red' : 'blue';
+    btn.style.color = '#fff';
+    btn.disabled = false;
+    btn.addEventListener('touchstart', e => { e.preventDefault(); checkAnswer(player, ans, btn); });
+    btn.addEventListener('mousedown', e => { e.preventDefault(); checkAnswer(player, ans, btn); });
+    return btn;
+}
+
+function showQuestion(){
+    questionCenter.textContent=`${currentQuestion.question}`;
+    const answers=[currentQuestion.answer];
+    while(answers.length<3){
+        let wrong=Math.ceil(Math.random()*10)*Math.ceil(Math.random()*10);
+        if(!answers.includes(wrong)) answers.push(wrong);
+    }
+    answers.sort(()=>Math.random()-0.5);
+
+    choicesRed.innerHTML='';
+    choicesBlue.innerHTML='';
+    answers.forEach(ans=>{
+        choicesRed.appendChild(createButton('red', ans));
+        choicesBlue.appendChild(createButton('blue', ans));
+    });
+
+    answeredRed=false;
+    answeredBlue=false;
+    fastest='';
+    winnerText.style.display='none';
+    questionCenter.style.display='block';
+}
+
+function checkAnswer(player, ans, btn){
+    if((player==='red' && answeredRed) || (player==='blue' && answeredBlue)) return;
+
+    if(ans===currentQuestion.answer && !fastest) fastest=player;
+
+    if(ans===currentQuestion.answer && fastest===player){
+        if(player==='red'){ pos1+=step; car1.style.left=pos1+'px'; }
+        if(player==='blue'){ pos2+=step; car2.style.left=pos2+'px'; }
+    }
+
+    btn.style.background=(player==='red')?'darkred':'darkblue';
+
+    if(ans!==currentQuestion.answer){
+        const parent = (player==='red')?choicesRed:choicesBlue;
+        Array.from(parent.children).forEach(b => { 
+            b.disabled = true; 
+            if(b!==btn) b.style.opacity = 0.6; 
+        });
+        btn.style.opacity = 0.3;
+    } else {
+        btn.style.background = (player==='red') ? 'darkred' : 'darkblue';
+    }
+
+    if(player==='red') answeredRed=true;
+    if(player==='blue') answeredBlue=true;
+
+    if(fastest || (answeredRed && answeredBlue && fastest==='')){
+        setTimeout(()=>{
+            if(pos1>=trackWidth-140){ endGame('Merah'); return; }
+            if(pos2>=trackWidth-140){ endGame('Biru'); return; }
+            currentQuestion = generateQuestion();
+            showQuestion();
+        },150);
+    }
+}
+
+function endGame(winner){
+    winnerText.textContent=`${winner} Menang!`;
+    winnerText.style.display='block';
+    questionCenter.style.display='none';
+    choicesRed.innerHTML='';
+    choicesBlue.innerHTML='';
+    startFireworks();
+}
+
+window.addEventListener('resize', ()=>{ trackWidth=document.getElementById('track').offsetWidth; });
+
+// Fireworks
+const canvas = document.getElementById('fireworksCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+
+window.addEventListener('resize', ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+function startFireworks(){
+    particles=[];
+    for(let i=0;i<100;i++){
+        particles.push({
+            x: window.innerWidth/2,
+            y: window.innerHeight/2,
+            vx:(Math.random()-0.5)*6,
+            vy:(Math.random()-0.5)*6,
+            alpha:1,
+            color:`hsl(${Math.random()*360},100%,50%)`,
+        });
+    }
+    animateFireworks();
+}
+
+function animateFireworks(){
+    ctx.fillStyle='rgba(0,0,0,0.2)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.vy+=0.05; // gravity
+        p.alpha-=0.01;
+        ctx.fillStyle=p.color;
+        ctx.globalAlpha=p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,3,0,2*Math.PI);
+        ctx.fill();
+    });
+
+    particles = particles.filter(p=>p.alpha>0);
+    if(particles.length>0) requestAnimationFrame(animateFireworks);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+</script>
+</body>
+</html>

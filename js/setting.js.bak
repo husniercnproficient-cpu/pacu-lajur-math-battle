@@ -1,0 +1,43 @@
+const opponentSelect = document.getElementById('opponent');
+const systemLevelContainer = document.getElementById('system-level-container');
+const difficultySelect = document.getElementById('difficulty');
+const startBtn = document.getElementById('startGameBtn');
+
+/* Generate level 1 - 10 */
+for (let i = 1; i <= 10; i++) {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = i;
+  difficultySelect.appendChild(opt);
+}
+
+/* Initial AI level visibility */
+systemLevelContainer.style.display =
+  opponentSelect.value === 'ai' ? 'block' : 'none';
+
+opponentSelect.addEventListener('change', () => {
+  systemLevelContainer.style.display =
+    opponentSelect.value === 'ai' ? 'block' : 'none';
+});
+
+/* Start Game */
+startBtn.addEventListener('click', () => {
+  const data = {
+    raceType: document.getElementById('race-type').value,
+    difficulty: difficultySelect.value,
+    opponent: opponentSelect.value,
+    systemLevel: document.getElementById('system-level').value
+  };
+
+  localStorage.setItem('raceType', data.raceType);
+  localStorage.setItem('difficulty', data.difficulty);
+  localStorage.setItem('opponent', data.opponent);
+
+  if (data.opponent === 'ai') {
+    localStorage.setItem('systemLevel', data.systemLevel);
+  } else {
+    localStorage.removeItem('systemLevel');
+  }
+
+  window.location.href = 'pacu-jalur-race.html';
+});

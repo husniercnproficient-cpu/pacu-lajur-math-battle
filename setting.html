@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pacu Jalur Math Battle - Settings</title>
+
+<!-- CSS terpisah -->
+<link rel="stylesheet" href="../css/setting.css">
+</head>
+<body>
+
+<h1>Game Settings</h1>
+
+<div class="container">
+  <div class="section">
+    <label for="race-type">Jenis Perlombaan:</label>
+    <select id="race-type">
+      <option value="multiplication">Perkalian</option>
+      <option value="division">Pembagian</option>
+      <option value="subtraction">Pengurangan</option>
+      <option value="addition">Pertambahan</option>
+    </select>
+
+    <label for="difficulty">Level:</label>
+    <select id="difficulty"></select>
+  </div>
+
+  <div class="section">
+    <label for="opponent">Berlomba Dengan:</label>
+    <select id="opponent">
+      <option value="ai">AI</option>
+      <option value="friend">Teman</option>
+    </select>
+
+    <div id="system-level-container">
+      <label for="system-level">Level AI:</label>
+      <select id="system-level">
+        <option value="beginner">Beginner</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<button id="startGameBtn">Start Game</button>
+
+<!-- JS terpisah -->
+<script src="../js/setting.js"></script>
+</body>
+</html>

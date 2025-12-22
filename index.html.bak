@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pacu Jalur Math Battle</title>
+<link rel="stylesheet" href="css/cover.css">
+</head>
+
+<body>
+<div class="landscape-container" onclick="enterGame()">
+  <img src="images/cover.webp" alt="Pacu Jalur Math Battle Cover">
+  <div class="powered-by">Powered by GatriX</div>
+</div>
+
+<script src="js/cover.js"></script>
+
+  <!-- SERVICE WORKER (WAJIB DI BAWAH) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log('Service Worker registered', reg))
+          .catch(err => console.error('Service Worker failed', err));
+      });
+    }
+  </script>
+
+
+
+</body>
+</html>
