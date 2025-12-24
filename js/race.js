@@ -7,8 +7,7 @@ document.getElementById("menuSettings").onclick = () => location.href = "setting
 document.getElementById("menuRefresh").onclick = () => resetGame();
 
 hamburger.onclick = () => {
-    menuItems.style.display =
-        menuItems.style.display === "flex" ? "none" : "flex";
+    menuItems.classList.toggle("show");
 };
 
 /* ================= GAME VAR ================= */
