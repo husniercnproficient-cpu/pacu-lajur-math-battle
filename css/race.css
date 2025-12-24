@@ -204,8 +204,162 @@ html, body {
     z-index:1;
 }
 
-    #hamburger .bar {
-        height: 3px;
+
+/* ===== WIN OVERLAY ===== */
+#winOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    z-index: 300;
+}
+
+/* ===== WIN TEXT (MODERN GAME STYLE) ===== */
+#winnerText {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 9vw;
+    font-weight: 900;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    display: none;
+    z-index: 500;
+    text-shadow: 0 0 25px currentColor;
+}
+
+/* Glow background */
+#winnerText::after {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    opacity: .3;
+    z-index: -1;
+}
+
+/* Pop animation */
+@keyframes winPop {
+    0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0;
+    }
+    70% {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
     }
 }
 
+#winnerText.show {
+    animation: winPop .6s ease-out forwards;
+}
+
+#winOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 999999;
+  display: none;
+}
+
+#fireworksCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ================= FORCE WIN OVERLAY ================= */
+#winOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 100000;
+  display: none;
+  pointer-events: auto;
+}
+
+
+/* ================= FIREWORK CANVAS ================= */
+
+#fireworksCanvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;              /* 🔽 di bawah */
+  pointer-events: none;    /* 🔑 tombol bisa diklik */
+}
+
+
+/* ================= WIN TEXT (RESET TOTAL) ================= */
+#winnerText {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-align: center;
+
+  opacity: 0;
+  z-index: 10;
+  text-shadow: 0 0 20px currentColor;
+}
+
+/* AKTIF SAAT MENANG */
+#winnerText.show {
+  animation: winPop 0.9s ease-out forwards,
+             glow 1.6s ease-in-out infinite alternate;
+}
+
+/* POP */
+@keyframes winPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* GLOW */
+@keyframes glow {
+  from { text-shadow: 0 0 10px currentColor; }
+  to   { text-shadow: 0 0 30px currentColor; }
+}
+
+
+/* ================= BUTTON ================= */
+#btnRestart {
+  position: absolute !important;
+  bottom: 18% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  padding: 14px 36px;
+  font-size: 20px;
+  font-weight: bold;
+
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(45deg, #ff9800, #ff5722);
+  color: #fff;
+  cursor: pointer;
+
+  opacity: 0;
+
+  z-index: 100001; /* 🔥 INI YANG HILANG */
+
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 1s;
+}
+
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
