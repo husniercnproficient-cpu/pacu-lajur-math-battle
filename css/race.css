@@ -205,25 +205,14 @@ html, body {
 }
 
 /* HAMBURGER – MOBILE FRIENDLY */
-@media (max-width: 600px) {
+@media (hover: none) and (pointer: coarse) {
     #hamburger {
-        width: 28px;
-        height: 22px;
-        top: 12px;
-        right: 12px;
+        width: 26px;
+        height: 20px;
     }
 
-    .bar {
+    #hamburger .bar {
         height: 3px;
-        border-radius: 2px;
     }
 }
 
-#hamburger {
-    cursor: pointer;
-}
-
-#hamburger:active {
-    transform: scale(0.9);
-    opacity: 0.8;
-}
