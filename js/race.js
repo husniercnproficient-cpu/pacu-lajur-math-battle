@@ -7,10 +7,10 @@ document.getElementById("menuSettings").onclick = () => location.href = "setting
 document.getElementById("menuRefresh").onclick = () => resetGame();
 
 hamburger.onclick = () => {
-    menuItems.classList.toggle("show");
+  menuItems.classList.toggle("show");
 };
 
-/* ================= GAME VAR ================= */
+/* ================= ELEMENT ================= */
 const car1 = document.getElementById("car1");
 const car2 = document.getElementById("car2");
 const track = document.getElementById("track");
@@ -18,8 +18,27 @@ const track = document.getElementById("track");
 const questionCenter = document.getElementById("questionCenter");
 const choicesRed = document.getElementById("choicesRed");
 const choicesBlue = document.getElementById("choicesBlue");
-const winnerText = document.getElementById("winnerText");
 
+const winOverlay = document.getElementById("winOverlay");
+const winnerText = document.getElementById("winnerText");
+const btnRestart = document.getElementById("btnRestart");
+const winSound = document.getElementById("winSound");
+
+/* ================= FIREWORKS ================= */
+const canvas = document.getElementById("fireworksCanvas");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let particles = [];
+let fireworksRunning = false;
+
+/* ================= GAME VAR ================= */
 let trackWidth = track.offsetWidth;
 let step = trackWidth * 0.08;
 let finishLine = trackWidth - 140;
@@ -29,197 +48,224 @@ let pos2 = 0;
 let currentAnswer = 0;
 let gameOver = false;
 
-// state per soal
 let redAnswered = false;
 let blueAnswered = false;
 
 /* ================= QUESTION ================= */
 function generateQuestion() {
-    const a = Math.ceil(Math.random() * 10);
-    const b = Math.ceil(Math.random() * 10);
-    return { q: `${a} × ${b}`, a: a * b };
+  const a = Math.ceil(Math.random() * 10);
+  const b = Math.ceil(Math.random() * 10);
+  return { q: `${a} × ${b}`, a: a * b };
 }
 
 function showQuestion() {
-    redAnswered = false;
-    blueAnswered = false;
+  redAnswered = false;
+  blueAnswered = false;
 
-    const q = generateQuestion();
-    currentAnswer = q.a;
-    questionCenter.textContent = q.q;
+  const q = generateQuestion();
+  currentAnswer = q.a;
+  questionCenter.textContent = q.q;
 
-    let answers = [q.a];
-    while (answers.length < 3) {
-        let r = Math.ceil(Math.random() * 10) * Math.ceil(Math.random() * 10);
-        if (!answers.includes(r)) answers.push(r);
-    }
+  let answers = [q.a];
+  while (answers.length < 3) {
+    let r = Math.ceil(Math.random() * 10) * Math.ceil(Math.random() * 10);
+    if (!answers.includes(r)) answers.push(r);
+  }
+  answers.sort(() => Math.random() - 0.5);
 
-    answers.sort(() => Math.random() - 0.5);
+  choicesRed.innerHTML = "";
+  choicesBlue.innerHTML = "";
 
-    choicesRed.innerHTML = "";
-    choicesBlue.innerHTML = "";
-
-    answers.forEach(val => {
-        choicesRed.appendChild(createBtn("red", val));
-        choicesBlue.appendChild(createBtn("blue", val));
-    });
+  answers.forEach(val => {
+    choicesRed.appendChild(createBtn("red", val));
+    choicesBlue.appendChild(createBtn("blue", val));
+  });
 }
 
 function createBtn(player, val) {
-    const btn = document.createElement("button");
-    btn.className = "choice-btn";
-    btn.style.background = player;
-    btn.textContent = val;
+  const btn = document.createElement("button");
+  btn.className = "choice-btn";
+  btn.style.background = player;
+  btn.textContent = val;
 
-    // SATU EVENT SAJA → AMAN DI HP
-    btn.addEventListener("pointerdown", e => {
-        e.preventDefault();
-        answer(player, val, btn);
-    });
+  btn.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    answer(player, val, btn);
+  });
 
-    return btn;
+  return btn;
 }
 
-/* ================= ANSWER LOGIC (FIX TOTAL) ================= */
+/* ================= ANSWER ================= */
 function answer(player, val, btn) {
-    if (gameOver) return;
+  if (gameOver) return;
 
-    if (player === "red" && redAnswered) return;
-    if (player === "blue" && blueAnswered) return;
+  if (player === "red" && redAnswered) return;
+  if (player === "blue" && blueAnswered) return;
 
-    if (player === "red") redAnswered = true;
-    if (player === "blue") blueAnswered = true;
+  if (player === "red") redAnswered = true;
+  if (player === "blue") blueAnswered = true;
 
-    // ===== BENAR =====
-    if (val === currentAnswer) {
-        if (player === "red") {
-            pos1 += step;
-            car1.style.left = pos1 + "px";
-        } else {
-            pos2 += step;
-            car2.style.left = pos2 + "px";
-        }
-
-        setTimeout(checkFinishOrNext, 200);
-        return;
+  if (val === currentAnswer) {
+    if (player === "red") {
+      pos1 += step;
+      car1.style.left = pos1 + "px";
+    } else {
+      pos2 += step;
+      car2.style.left = pos2 + "px";
     }
+    setTimeout(checkFinishOrNext, 200);
+    return;
+  }
 
-    // ===== SALAH =====
-    btn.style.opacity = "0.4";
+  btn.style.opacity = "0.4";
 
-    // kalau dua-duanya salah
-    if (redAnswered && blueAnswered) {
-        setTimeout(checkFinishOrNext, 300);
-    }
+  if (redAnswered && blueAnswered) {
+    setTimeout(checkFinishOrNext, 300);
+  }
 }
 
 /* ================= FINISH CHECK ================= */
 function checkFinishOrNext() {
-    if (gameOver) return;
+  if (gameOver) return;
 
-    if (pos1 >= finishLine && pos2 >= finishLine) {
-        finish("SERI 🤝");
-        return;
-    }
-    if (pos1 >= finishLine) {
-        finish("MERAH");
-        return;
-    }
-    if (pos2 >= finishLine) {
-        finish("BIRU");
-        return;
-    }
+  if (pos1 >= finishLine && pos2 >= finishLine) {
+    finish("SERI");
+    return;
+  }
+  if (pos1 >= finishLine) {
+    finish("MERAH");
+    return;
+  }
+  if (pos2 >= finishLine) {
+    finish("BIRU");
+    return;
+  }
 
-    showQuestion();
+  showQuestion();
 }
 
 /* ================= FINISH ================= */
 function finish(winner) {
-    if (gameOver) return;
-    gameOver = true;
+  if (gameOver) return;
+  gameOver = true;
 
-    winnerText.textContent = `${winner} MENANG!`;
-    winnerText.style.display = "block";
+  winOverlay.style.display = "block";
 
-    startFireworks();
+  // text
+  winnerText.textContent = `${winner} MENANG!`;
+  winnerText.style.display = "block";
+  winnerText.classList.remove("show");
+  void winnerText.offsetHeight;
+  winnerText.classList.add("show");
+
+  if (winner === "MERAH") winnerText.style.color = "#ff3b3b";
+  else if (winner === "BIRU") winnerText.style.color = "#2ea8ff";
+  else winnerText.style.color = "#ffd700";
+
+  // button
+	btnRestart.style.display = "block";
+	btnRestart.classList.remove("show");
+	void btnRestart.offsetHeight;
+	btnRestart.classList.add("show");
+
+
+  winSound.currentTime = 0;
+  winSound.play().catch(()=>{});
+
+  startFireworks();
 }
 
+btnRestart.onclick = () => {
+  winOverlay.style.display = "none";
+  resetGame();
+};
+
+
 /* ================= FIREWORKS ================= */
-const canvas = document.getElementById("fireworksCanvas");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-canvas.style.display = "none";
-canvas.style.background = "black";
-
-let particles = [];
-
 function createFirework(x, y) {
-    for (let i = 0; i < 60; i++) {
-        particles.push({
-            x, y,
-            vx: (Math.random() - 0.5) * 7,
-            vy: (Math.random() - 0.5) * 7,
-            life: 60,
-            color: `hsl(${Math.random() * 360},100%,60%)`
-        });
-    }
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 7,
+      vy: (Math.random() - 0.5) * 7,
+      life: 60,
+      color: `hsl(${Math.random() * 360},100%,60%)`
+    });
+  }
 }
 
 function animateFireworks() {
-    ctx.fillStyle = "rgba(0,0,0,0.3)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (!fireworksRunning) return;
 
-    particles.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
 
-        if (p.life <= 0) particles.splice(i, 1);
-    });
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
 
-    if (canvas.style.display === "block") {
-        requestAnimationFrame(animateFireworks);
-    }
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  requestAnimationFrame(animateFireworks);
 }
 
 function startFireworks() {
-    canvas.style.display = "block";
-    animateFireworks();
+  fireworksRunning = true;
+  animateFireworks();
 
-    const fw = setInterval(() => {
-        createFirework(
-            Math.random() * canvas.width,
-            Math.random() * canvas.height * 0.5
-        );
-    }, 250);
-
-    setTimeout(() => {
-        clearInterval(fw);
-        canvas.style.display = "none";
-        resetGame();
-    }, 4000);
+  setInterval(() => {
+    if (!fireworksRunning) return;
+    createFirework(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height * 0.5
+    );
+  }, 300);
 }
 
 /* ================= RESET ================= */
 function resetGame() {
-    pos1 = 0;
-    pos2 = 0;
-    gameOver = false;
+  // sembunyikan overlay
+  winOverlay.style.display = "none";
 
-    car1.style.left = "-3%";
-    car2.style.left = "-3%";
+  // reset state
+  gameOver = false;
+  redAnswered = false;
+  blueAnswered = false;
 
-    winnerText.style.display = "none";
-    particles = [];
+  // reset posisi
+  pos1 = 0;
+  pos2 = 0;
+  car1.style.left = "-3%";
+  car2.style.left = "-3%";
 
-    showQuestion();
+  // sembunyikan win UI
+  winnerText.style.display = "none";
+  winnerText.classList.remove("show");
+  btnRestart.style.display = "none";
+  btnRestart.classList.remove("show");
+
+  // bersihkan firework
+  particles = [];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 🔥 INI KUNCI: tampilkan soal baru
+  showQuestion();
 }
+
+
+
+/* ================= BUTTON ================= */
+btnRestart.onclick = () => resetGame();
 
 /* ================= START ================= */
 showQuestion();
