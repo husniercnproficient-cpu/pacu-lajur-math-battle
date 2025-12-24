@@ -204,13 +204,6 @@ html, body {
     z-index:1;
 }
 
-/* HAMBURGER – MOBILE FRIENDLY */
-@media (hover: none) and (pointer: coarse) {
-    #hamburger {
-        width: 26px;
-        height: 20px;
-    }
-
     #hamburger .bar {
         height: 3px;
     }
