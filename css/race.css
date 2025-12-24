@@ -203,3 +203,27 @@ html, body {
     pointer-events:none;
     z-index:1;
 }
+
+/* HAMBURGER – MOBILE FRIENDLY */
+@media (max-width: 600px) {
+    #hamburger {
+        width: 28px;
+        height: 22px;
+        top: 12px;
+        right: 12px;
+    }
+
+    .bar {
+        height: 3px;
+        border-radius: 2px;
+    }
+}
+
+#hamburger {
+    cursor: pointer;
+}
+
+#hamburger:active {
+    transform: scale(0.9);
+    opacity: 0.8;
+}
