@@ -4,105 +4,109 @@ html, body {
     width:100%;
     height:100%;
     overflow:hidden;
-    font-family:sans-serif;
     background:#a0e0ff;
+    font-family:sans-serif;
     touch-action: manipulation;
 }
 
-/* Track */
+/* TRACK */
 #track {
-    position: relative;
-    width: 100%;
-    height: 40%;
-    background: #4db8ff;
+    position:relative;
+    width:100%;
+    height:40%;
+    background:#4db8ff;
     border-top:3px solid #0077b3;
     border-bottom:3px solid #0077b3;
-    overflow:hidden;
     margin-top:5%;
+    overflow:hidden;
+    z-index:10;
 }
 
-/* Waves */
+/* WAVES */
 .wave, .wave2 {
     position:absolute;
     top:0; left:0;
-    width:200%; height:100%;
-    background-repeat: repeat-x;
-    background-size: 400px 60px;
+    width:200%;
+    height:100%;
+    background-repeat:repeat-x;
+    background-size:400px 60px;
 }
 
 .wave {
-    background-image: url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60">\
-<path d="M0 30 Q50 10 100 30 T400 30" fill="transparent" stroke="white" stroke-width="3"/>\
-</svg>');
-    animation: waveMove 8s linear infinite;
+    background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='60'>\
+<path d='M0 30 Q50 10 100 30 T400 30' fill='transparent' stroke='white' stroke-width='3'/>\
+</svg>");
+    animation:waveMove 8s linear infinite;
 }
 
 .wave2 {
-    background-image: url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60">\
-<path d="M0 30 Q50 50 100 30 T400 30" fill="transparent" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>\
-</svg>');
-    animation: waveMove 12s linear infinite reverse;
+    background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='60'>\
+<path d='M0 30 Q50 50 100 30 T400 30' fill='transparent' stroke='rgba(255,255,255,0.5)' stroke-width='2'/>\
+</svg>");
+    animation:waveMove 12s linear infinite reverse;
 }
 
 @keyframes waveMove {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {transform:translateX(0);}
+    to {transform:translateX(-50%);}
 }
 
-/* Boats */
+/* BOATS */
 .car {
+    position:absolute;
     width:40%;
     max-width:200px;
     height:80%;
     max-height:150px;
-    position:absolute;
     left:-3%;
-    animation: float 2s ease-in-out infinite;
-    transition:left 0.4s ease;
+    animation:float 2s ease-in-out infinite;
+    transition:left .3s ease;
 }
 
 #car1 {
     top:0%;
-    background:url('../images/perahu_merah_bg.png') no-repeat center/contain;
+    background:url("../images/perahu_merah_bg.png") no-repeat center/contain;
 }
 
 #car2 {
     top:33%;
-    background:url('../images/perahu_biru_bg.png') no-repeat center/contain;
-    animation-delay:1s;
+    background:url("../images/perahu_biru_bg.png") no-repeat center/contain;
 }
 
 @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+    0%,100% {transform:translateY(0);}
+    50% {transform:translateY(-5px);}
 }
 
-/* Finish */
+/* FINISH */
 #finishLine {
     position:absolute;
-    right:0; top:0;
-    width:60px; height:100%;
-    background:#000;
-    color:#fff;
-    font-weight:bold;
-    writing-mode: vertical-rl;
+    right:0;
+    top:0;
+    width:60px;
+    height:100%;
+    background:black;
+    color:white;
+    writing-mode:vertical-rl;
     display:flex;
-    justify-content:center;
     align-items:center;
-    font-size:1.5em;
+    justify-content:center;
+    font-weight:bold;
 }
 
 /* UI */
 #winnerText {
     position:fixed;
-    top:50%; left:50%;
+    top:50%;
+    left:50%;
     transform:translate(-50%,-50%);
     font-size:8vw;
     font-weight:bold;
     color:red;
     display:none;
+    z-index:500;
 }
 
 #questionCenter {
@@ -114,9 +118,10 @@ html, body {
     padding:.5em 1em;
     font-size:5vw;
     font-weight:bold;
+    z-index:500;
 }
 
-/* Answers */
+/* ANSWERS */
 .choice-btn {
     width:70px;
     height:70px;
@@ -127,26 +132,33 @@ html, body {
     color:white;
 }
 
+.choice-btn.wrong {
+    background:#555 !important;
+    opacity:.5;
+}
+
 #choicesRed, #choicesBlue {
     position:fixed;
     bottom:15%;
     display:flex;
     gap:2vw;
+    z-index:20000;
 }
 
 #choicesRed { left:5%; }
 #choicesBlue { right:5%; }
 
-/* Hamburger */
+/* HAMBURGER */
 #hamburger {
     position:fixed;
-    top:1%; right:1%;
+    top:10px;
+    right:10px;
     width:40px;
     height:35px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    z-index:300;
+    z-index:10000;
 }
 
 .bar {
@@ -155,29 +167,39 @@ html, body {
     border-radius:3px;
 }
 
+/* MENU FIX */
 #menuItems {
     position:fixed;
     top:60px;
     right:10px;
-    background:rgba(0,0,0,.7);
+    background:rgba(0,0,0,.75);
     display:none;
     flex-direction:column;
     border-radius:8px;
-    z-index:300;
+    z-index:9999;
+    pointer-events:none;
+}
+
+#menuItems.show {
+    display:flex;
+    pointer-events:auto;
 }
 
 #menuItems button {
     background:none;
-    color:white;
     border:none;
-    padding:10px 20px;
+    color:white;
+    padding:12px 20px;
+    font-size:18px;
 }
 
-/* Fireworks */
+/* FIREWORKS */
 #fireworksCanvas {
     position:fixed;
-    top:0; left:0;
+    top:0;
+    left:0;
     width:100%;
     height:100%;
     pointer-events:none;
+    z-index:1;
 }
