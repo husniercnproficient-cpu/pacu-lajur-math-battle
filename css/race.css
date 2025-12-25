@@ -6,34 +6,34 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px; /* tinggi baris pohon atas */
+    height: 100px; /* tinggi baris pohon atas */
+    background-color: #3a7d3a; /* warna dasar pohon/ground */
     background-image: 
         url('../images/bg3.png'),
         linear-gradient(to bottom, rgba(58,125,58,0) 0%, rgba(58,125,58,0.8) 100%);
-    background-repeat: repeat-x; /* ulang horizontal */
-    background-size: contain;
-    z-index:5; /* di atas track tapi di bawah menu */
+    background-repeat: repeat-x, no-repeat;
+    background-size: auto 50px, 100%;
+    z-index:5;
 }
 
-/* POHON BAWAH - FULL SAMPAI BAWAH DENGAN UKURAN SAMA */
+
+/* POHON BAWAH - FULL SAMPAI BAWAH, banyak baris */
 #treesBottom {
     position: absolute;
-    top: calc(5% + 40%);
+    top: calc(5% + 40%); /* tepat di bawah track */
     left: 0;
     width: 100%;
-    bottom: 0;
+    bottom: 0; /* sampai bawah layar */
     background-color: #3a7d3a; /* warna hijau dasar */
     background-image: 
         url('../images/bg3.png'),
         linear-gradient(to bottom, rgba(58,125,58,0) 0%, rgba(58,125,58,0.8) 100%);
     background-repeat: repeat, no-repeat;
-    background-size: auto 50px, 100% 100%;
+    background-size: auto 50px, 100%;
     z-index:0;
 }
 
-
-
-/* ================= EXISTING CSS ================= */
+/* ================= BODY & TRACK ================= */
 html, body {
     margin:0;
     padding:0;
@@ -132,19 +132,7 @@ html, body {
     font-weight:bold;
 }
 
-/* UI */
-#winnerText {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:8vw;
-    font-weight:bold;
-    color:red;
-    display:none;
-    z-index:500;
-}
-
+/* ================= UI ================= */
 #questionCenter {
     position:fixed;
     bottom:0;
@@ -157,7 +145,6 @@ html, body {
     z-index:500;
 }
 
-/* ANSWERS */
 .choice-btn {
     width:70px;
     height:70px;
@@ -184,7 +171,7 @@ html, body {
 #choicesRed { left:5%; }
 #choicesBlue { right:5%; }
 
-/* HAMBURGER */
+/* ================= HAMBURGER & MENU ================= */
 #hamburger {
     position:fixed;
     top:10px;
@@ -203,7 +190,6 @@ html, body {
     border-radius:3px;
 }
 
-/* MENU FIX */
 #menuItems {
     position:fixed;
     top:60px;
@@ -229,13 +215,61 @@ html, body {
     font-size:18px;
 }
 
-/* FIREWORKS */
-#fireworksCanvas {
-    position:fixed;
+/* ================= WIN OVERLAY ================= */
+#winOverlay {
+    position: fixed;
     top:0;
     left:0;
     width:100%;
     height:100%;
+    display:none; /* aktifkan via JS saat menang */
+    justify-content:center;
+    align-items:center;
+    background: rgba(0,0,0,0.5);
+    z-index:99999; /* paling atas */
+    flex-direction:column;
+}
+
+#fireworksCanvas {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
     pointer-events:none;
+}
+
+#winnerText {
+    font-size:8vw;
+    font-weight:bold;
+    color:red;
     z-index:1;
 }
+
+#btnRestart {
+    position: relative;
+    z-index: 1;
+    padding: 14px 28px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(145deg, #ff6b6b, #ff3b3b);
+    border: none;
+    border-radius: 25px; /* rounded corners */
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* shadow */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* saat ditekan */
+#btnRestart:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+/* hover effect */
+#btnRestart:hover {
+    background: linear-gradient(145deg, #ff7b7b, #ff4b4b);
+}
+
