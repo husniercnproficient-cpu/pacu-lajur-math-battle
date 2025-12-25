@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pacu Jalur Math Battle</title>
+<link rel="stylesheet" href="css/race_human.css">
+</head>
+
+<body>
+
+<!-- POHON ATAS -->
+<div id="treesTop"></div>
+
+<!-- GAME AREA -->
+<div id="track">
+    <div class="wave"></div>
+    <div class="wave2"></div>
+    <div id="car1" class="car"></div>
+    <div id="car2" class="car"></div>
+    <div id="finishLine">FINISH</div>
+</div>
+
+<!-- POHON BAWAH -->
+<div id="treesBottom"></div>
+
+<!-- PERTANYAAN DAN PILIHAN -->
+<div id="questionCenter"></div>
+<div id="choicesRed"></div>
+<div id="choicesBlue" class="choices"></div>
+<div id="aiLabel"></div>
+
+
+
+<!-- HAMBURGER -->
+<div id="hamburger">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+<!-- MENU -->
+<div id="menuItems">
+    <button id="menuHome">Home</button>
+    <button id="menuRefresh">New Game</button>
+    <button id="menuSettings">Settings</button>
+</div>
+
+<!-- OVERLAY KEMENANGAN -->
+<div id="winOverlay">
+  <canvas id="fireworksCanvas"></canvas>
+  <div id="winnerText">KAMU MENANG!</div>
+  <button id="btnRestart">MAIN LAGI</button>
+</div>
+
+<audio id="splashSound" src="sounds/splash.mp3"></audio>
+<audio id="winSound" src="sounds/win.mp3"></audio>
+<script src="js/race_human.js"></script>
+</body>
+</html>
