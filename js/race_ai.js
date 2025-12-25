@@ -211,6 +211,29 @@ function resetGame(){
   showQuestion();
 }
 
+// ================= ADMOB BANNER =================
+function showAdBanner() {
+    if (window.admob && admob.banner) {
+        // Aktifkan test ads
+        admob.banner.config({ testing: true });
+
+        // Tampilkan banner
+        admob.banner.show({
+            id: 'ca-app-pub-3940256099942544/6300978111', // contoh test ID AdMob
+            position: 'bottom',
+            autoShow: true
+        });
+    }
+}
+
+// Jalankan AdMob saat device siap
+document.addEventListener('deviceready', () => {
+    showAdBanner();
+});
+
+
+
+
 // ================= START =================
 showQuestion();
 
