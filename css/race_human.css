@@ -1,0 +1,313 @@
+/* ================= POHON ================= */
+
+/* POHON ATAS - SATU BARIS + GRADASI */
+#treesTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #3a7d3a;
+    background-image: 
+        url('../images/bg3.png'),
+        linear-gradient(to bottom, rgba(58,125,58,0) 0%, rgba(58,125,58,0.8) 100%);
+    background-repeat: repeat-x, no-repeat;
+    background-size: auto 50px, 100%;
+    z-index:5;
+}
+
+#treesBottom {
+    position: absolute;
+    top: calc(5% + 40% + 10px); /* geser sedikit ke bawah supaya pohon tidak menempel track */
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    background-color: #3a7d3a;
+    background-image: 
+        url('../images/bg3.png'),
+        linear-gradient(to top, rgba(58,125,58,0.8) 0%, rgba(58,125,58,0) 30%);
+    background-repeat: repeat, no-repeat;
+    background-size: auto 50px, 100%;
+    z-index: 0;
+}
+
+/* ================= BODY & TRACK ================= */
+html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#a0e0ff;
+    font-family:sans-serif;
+    touch-action: manipulation;
+}
+
+#track {
+    position:relative;
+    width:100%;
+    height:35%;
+    background:#4db8ff;
+    border-top:3px solid #0077b3;
+    border-bottom:3px solid #0077b3;
+    margin-top:5%;
+    overflow:hidden;
+    z-index:10;
+}
+
+/* WAVES */
+.wave, .wave2 {
+    position:absolute;
+    top:0; left:0;
+    width:200%;
+    height:100%;
+    background-repeat:repeat-x;
+    background-size:400px 60px;
+}
+
+.wave {
+    background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='60'>\
+<path d='M0 30 Q50 10 100 30 T400 30' fill='transparent' stroke='white' stroke-width='3'/>\
+</svg>");
+    animation:waveMove 8s linear infinite;
+}
+
+.wave2 {
+    background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='60'>\
+<path d='M0 30 Q50 50 100 30 T400 30' fill='transparent' stroke='rgba(255,255,255,0.5)' stroke-width='2'/>\
+</svg>");
+    animation:waveMove 12s linear infinite reverse;
+}
+
+@keyframes waveMove {
+    from {transform:translateX(0);}
+    to {transform:translateX(-50%);}
+}
+
+/* BOATS */
+.car {
+    position:absolute;
+    width:40%;
+    max-width:200px;
+    height:80%;
+    max-height:150px;
+    left:-3%;
+    animation:float 2s ease-in-out infinite;
+    transition:left .3s ease;
+}
+
+/* Efek percikan air di bawah perahu */
+.car::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 60%;
+    height: 10px;
+    background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+    transform: translateX(-50%) scaleX(0.8);
+    opacity: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: ripple 0.6s ease-out infinite;
+}
+
+/* Efek riak air di belakang perahu */
+.car::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 40%;
+    height: 6px;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    transform: translateX(-50%) scaleX(0.5);
+    border-radius: 50%;
+    animation: rippleBack 0.8s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    0%, 100% { transform: translateX(-50%) scaleX(0.8); opacity: 0; }
+    50% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
+}
+
+@keyframes rippleBack {
+    0% { opacity: 0; transform: translateX(-50%) scaleX(0.3); }
+    50% { opacity: 0.5; transform: translateX(-50%) scaleX(1); }
+    100% { opacity: 0; transform: translateX(-50%) scaleX(1.5); }
+}
+
+#car1 {
+    top:0%;
+    background:url("../images/perahu_merah_bg.png") no-repeat center/contain;
+}
+
+#car2 {
+    top:33%;
+    background:url("../images/perahu_biru_bg.png") no-repeat center/contain;
+}
+
+
+@keyframes float {
+    0%,100% {transform:translateY(0);}
+    50% {transform:translateY(-5px);}
+}
+
+/* FINISH */
+#finishLine {
+    position:absolute;
+    right:0;
+    top:0;
+    width:60px;
+    height:100%;
+    background:black;
+    color:white;
+    writing-mode:vertical-rl;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* ================= UI ================= */
+#questionCenter {
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    padding:.5em 1em;
+    font-size:5vw;
+    font-weight:bold;
+    z-index:500;
+}
+
+.choice-btn {
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:none;
+    font-size:4vw;
+    font-weight:bold;
+    color:white;
+}
+
+.choice-btn.wrong {
+    background:#555 !important;
+    opacity:.5;
+}
+
+#choicesRed, #choicesBlue {
+    position:fixed;
+    bottom:15%;
+    display:flex;
+    gap:2vw;
+    z-index:20000;
+}
+
+#choicesRed { left:5%; }
+#choicesBlue { right:5%; }
+
+/* ================= HAMBURGER & MENU ================= */
+#hamburger {
+    position:fixed;
+    top:10px;
+    right:10px;
+    width:40px;
+    height:35px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    z-index:10000;
+}
+
+.bar {
+    height:5px;
+    background:white;
+    border-radius:3px;
+}
+
+#menuItems {
+    position:fixed;
+    top:60px;
+    right:10px;
+    background:rgba(0,0,0,.75);
+    display:none;
+    flex-direction:column;
+    border-radius:8px;
+    z-index:9999;
+    pointer-events:none;
+}
+
+#menuItems.show {
+    display:flex;
+    pointer-events:auto;
+}
+
+#menuItems button {
+    background:none;
+    border:none;
+    color:white;
+    padding:12px 20px;
+    font-size:18px;
+}
+
+/* ================= WIN OVERLAY ================= */
+#winOverlay {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:none; /* aktifkan via JS saat menang */
+    justify-content:center;
+    align-items:center;
+    background: rgba(0,0,0,0.5);
+    z-index:99999;
+    flex-direction:column;
+}
+
+#fireworksCanvas {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+
+#winnerText {
+    font-size:8vw;
+    font-weight:bold;
+    color:red;
+    z-index:1;
+}
+
+/* Tombol MAIN LAGI ala Android */
+#btnRestart {
+    position: relative;
+    z-index:1;
+    padding: 14px 28px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(145deg, #ff6b6b, #ff3b3b);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#btnRestart:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+#btnRestart:hover {
+    background: linear-gradient(145deg, #ff7b7b, #ff4b4b);
+}
