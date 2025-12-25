@@ -39,6 +39,7 @@ html, body {
     background:#a0e0ff;
     font-family:sans-serif;
     touch-action: manipulation;
+    padding-bottom: 50px;
 }
 
 :root {
@@ -257,3 +258,4 @@ html, body {
 }
 #btnRestart:active { transform: scale(0.95); box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
 #btnRestart:hover { background: linear-gradient(145deg, #ff7b7b, #ff4b4b); }
+
