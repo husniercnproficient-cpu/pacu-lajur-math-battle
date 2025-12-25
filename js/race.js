@@ -204,16 +204,18 @@ function finish(winner) {
   if (gameOver) return;
   gameOver = true;
 
+  // sembunyikan UI lain
+  questionCenter.style.display = "none";
+  choicesRed.style.display = "none";
+  choicesBlue.style.display = "none";
+  hamburger.style.display = "none";
+
   // overlay
-  winOverlay.style.display = "block";
+  winOverlay.style.display = "flex";
 
   // winner text
   winnerText.textContent = `${winner} MENANG!`;
   winnerText.style.display = "block";
-  winnerText.classList.remove("show");
-  void winnerText.offsetHeight;
-  winnerText.classList.add("show");
-
   if (winner === "MERAH") winnerText.style.color = "#ff3b3b";
   else if (winner === "BIRU") winnerText.style.color = "#2ea8ff";
   else winnerText.style.color = "#ffd700";
@@ -227,15 +229,16 @@ function finish(winner) {
 
   // show restart button
   btnRestart.style.display = "block";
-  btnRestart.classList.remove("show");
-  void btnRestart.offsetHeight;
-  btnRestart.classList.add("show");
 }
 
 /* ================= RESTART ================= */
 btnRestart.onclick = () => {
   winOverlay.style.display = "none";
-  winnerText.style.display = "none";
+  questionCenter.style.display = "block";
+  choicesRed.style.display = "flex";
+  choicesBlue.style.display = "flex";
+  hamburger.style.display = "flex";
+
   stopFireworks();
   resetGame();
 };
@@ -251,8 +254,8 @@ function resetGame() {
   car1.style.left = "-3%";
   car2.style.left = "-3%";
 
-  winnerText.classList.remove("show");
-  btnRestart.classList.remove("show");
+  winnerText.style.display = "none";
+  btnRestart.style.display = "none";
 
   particles = [];
   ctx.clearRect(0, 0, canvas.width, canvas.height);
