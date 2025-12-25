@@ -6,6 +6,60 @@
 <title>Pacu Jalur Math Battle</title>
 <link rel="stylesheet" href="css/race.css">
 </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pacu Jalur Math Battle</title>
+<link rel="stylesheet" href="css/race.css">
+</head>
+<body>
+
+<!-- GAME AREA -->
+<div id="gameContainer">
+    <div class="forest left"></div>
+
+    <div id="track">
+        <div class="wave"></div>
+        <div class="wave2"></div>
+        <div id="car1" class="car"></div>
+        <div id="car2" class="car"></div>
+        <div id="finishLine">FINISH</div>
+    </div>
+
+    <div class="forest right"></div>
+</div>
+
+<div id="questionCenter"></div>
+<div id="choicesRed"></div>
+<div id="choicesBlue"></div>
+
+<!-- HAMBURGER -->
+<div id="hamburger">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+<!-- MENU -->
+<div id="menuItems">
+    <button id="menuHome">Home</button>
+    <button id="menuRefresh">New Game</button>
+    <button id="menuSettings">Settings</button>
+</div>
+
+<!-- 🔥 OVERLAY KEMENANGAN -->
+<div id="winOverlay">
+  <canvas id="fireworksCanvas"></canvas>
+  <div id="winnerText"></div>
+  <button id="btnRestart">MAIN LAGI</button>
+</div>
+
+<audio id="winSound" src="sound/win.mp3"></audio>
+<script src="js/race.js"></script>
+</body>
+</html>
 
 <body>
 
