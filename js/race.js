@@ -32,11 +32,65 @@ function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 let particles = [];
 let fireworksRunning = false;
+
+function createFirework(x, y) {
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 7,
+      vy: (Math.random() - 0.5) * 7,
+      life: 60,
+      color: `hsl(${Math.random() * 360},100%,60%)`
+    });
+  }
+}
+
+function animateFireworks() {
+  if (!fireworksRunning) return;
+
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  if (fireworksRunning && Math.random() < 0.1) {
+    createFirework(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height * 0.5
+    );
+  }
+
+  requestAnimationFrame(animateFireworks);
+}
+
+function startFireworks() {
+  fireworksRunning = true;
+  animateFireworks();
+}
+
+function stopFireworks() {
+  fireworksRunning = false;
+  particles = [];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 /* ================= GAME VAR ================= */
 let trackWidth = track.offsetWidth;
@@ -150,9 +204,10 @@ function finish(winner) {
   if (gameOver) return;
   gameOver = true;
 
+  // overlay
   winOverlay.style.display = "block";
 
-  // text
+  // winner text
   winnerText.textContent = `${winner} MENANG!`;
   winnerText.style.display = "block";
   winnerText.classList.remove("show");
@@ -163,109 +218,47 @@ function finish(winner) {
   else if (winner === "BIRU") winnerText.style.color = "#2ea8ff";
   else winnerText.style.color = "#ffd700";
 
-  // button
-	btnRestart.style.display = "block";
-	btnRestart.classList.remove("show");
-	void btnRestart.offsetHeight;
-	btnRestart.classList.add("show");
-
-
+  // play sound
   winSound.currentTime = 0;
   winSound.play().catch(()=>{});
 
+  // start fireworks
   startFireworks();
+
+  // show restart button
+  btnRestart.style.display = "block";
+  btnRestart.classList.remove("show");
+  void btnRestart.offsetHeight;
+  btnRestart.classList.add("show");
 }
 
+/* ================= RESTART ================= */
 btnRestart.onclick = () => {
   winOverlay.style.display = "none";
+  winnerText.style.display = "none";
+  stopFireworks();
   resetGame();
 };
 
-
-/* ================= FIREWORKS ================= */
-function createFirework(x, y) {
-  for (let i = 0; i < 60; i++) {
-    particles.push({
-      x,
-      y,
-      vx: (Math.random() - 0.5) * 7,
-      vy: (Math.random() - 0.5) * 7,
-      life: 60,
-      color: `hsl(${Math.random() * 360},100%,60%)`
-    });
-  }
-}
-
-function animateFireworks() {
-  if (!fireworksRunning) return;
-
-  ctx.fillStyle = "rgba(0,0,0,0.3)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.life--;
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-    ctx.fillStyle = p.color;
-    ctx.fill();
-
-    if (p.life <= 0) particles.splice(i, 1);
-  }
-
-  requestAnimationFrame(animateFireworks);
-}
-
-function startFireworks() {
-  fireworksRunning = true;
-  animateFireworks();
-
-  setInterval(() => {
-    if (!fireworksRunning) return;
-    createFirework(
-      Math.random() * canvas.width,
-      Math.random() * canvas.height * 0.5
-    );
-  }, 300);
-}
-
 /* ================= RESET ================= */
 function resetGame() {
-  // sembunyikan overlay
-  winOverlay.style.display = "none";
-
-  // reset state
   gameOver = false;
   redAnswered = false;
   blueAnswered = false;
 
-  // reset posisi
   pos1 = 0;
   pos2 = 0;
   car1.style.left = "-3%";
   car2.style.left = "-3%";
 
-  // sembunyikan win UI
-  winnerText.style.display = "none";
   winnerText.classList.remove("show");
-  btnRestart.style.display = "none";
   btnRestart.classList.remove("show");
 
-  // bersihkan firework
   particles = [];
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🔥 INI KUNCI: tampilkan soal baru
   showQuestion();
 }
-
-
-
-/* ================= BUTTON ================= */
-btnRestart.onclick = () => resetGame();
 
 /* ================= START ================= */
 showQuestion();
