@@ -273,45 +273,41 @@ html, body {
   height: 100%;
 }
 
-/* ================= FORCE WIN OVERLAY ================= */
+/* FIREWORK CANVAS */
+#fireworksCanvas {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;       /* biar klik game tetap jalan */
+  z-index: 100001;            /* 🔝 di atas semua elemen */
+}
+
+/* WIN OVERLAY */
 #winOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.88);
-  z-index: 100000;
+  z-index: 100000;           /* di bawah canvas, tapi di atas game */
   display: none;
   pointer-events: auto;
 }
 
-
-/* ================= FIREWORK CANVAS ================= */
-
-#fireworksCanvas {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1;              /* 🔽 di bawah */
-  pointer-events: none;    /* 🔑 tombol bisa diklik */
-}
-
-
-/* ================= WIN TEXT (RESET TOTAL) ================= */
+/* WINNER TEXT */
 #winnerText {
-  position: absolute;
-  top: 18%;
+  position: fixed;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.6);
-
-  font-size: 48px;
+  transform: translate(-50%, -50%);
+  font-size: 9vw;
   font-weight: 900;
-  letter-spacing: 3px;
-  text-align: center;
-
-  opacity: 0;
-  z-index: 10;
-  text-shadow: 0 0 20px currentColor;
+  text-transform: uppercase;
+  color: red;
+  text-shadow: 0 0 25px currentColor;
+  display: none;
+  z-index: 100002;           /* di atas canvas */
 }
+
 
 /* AKTIF SAAT MENANG */
 #winnerText.show {
