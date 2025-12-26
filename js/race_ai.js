@@ -168,46 +168,61 @@ function preloadInterstitial() {
 }
 
 // ================= FINISH =================
+// ================= FINISH + INTERSTITIAL =================
 function finish(winner){
-  if(gameOver) return;
-  gameOver=true;
-  if(aiTimeout){ clearTimeout(aiTimeout); aiTimeout=null; }
+    if(gameOver) return;
+    gameOver=true;
 
-  questionCenter.style.display="none"; 
-  choicesRed.style.display="none"; 
-  choicesBlue.style.display="none"; 
-  hamburger.style.display="none";
-  winOverlay.style.display="flex"; 
-  winnerText.style.display="block";
+    if(aiTimeout){ clearTimeout(aiTimeout); aiTimeout=null; }
 
-  if(winner==="SERI"){ 
-      winnerText.textContent="SERI"; 
-      winnerText.style.color="#ffffff"; 
-  }
-  else{ 
-      winnerText.textContent=`${winner} MENANG!`; 
-      winnerText.style.color=(winner==="MERAH")?"#ff3b3b":"#2ea8ff"; 
-  }
+    // Sembunyikan elemen game
+    questionCenter.style.display="none"; 
+    choicesRed.style.display="none"; 
+    choicesBlue.style.display="none"; 
+    hamburger.style.display="none";
 
-  winSound.currentTime=0; 
-  winSound.play().catch(()=>{});
-  startFireworks();
-  btnRestart.style.display="block";
-  btnRestart.disabled = true;
+    // Tampilkan overlay pemenang
+    winOverlay.style.display="flex"; 
+    winnerText.style.display="block";
 
-  // Tampilkan interstitial jika siap
-  if(interstitialReady && window.admob && admob.interstitial){
-      admob.interstitial.show().then(() => {
-          btnRestart.disabled = false;
-          preloadInterstitial(); // preload untuk race berikutnya
-      }).catch(err => {
-          console.log("Interstitial show error:", err);
-          btnRestart.disabled = false;
-      });
-  } else {
-      btnRestart.disabled = false;
-  }
+    if(winner==="SERI"){ 
+        winnerText.textContent="SERI"; 
+        winnerText.style.color="#ffffff"; 
+    } else { 
+        winnerText.textContent=`${winner} MENANG!`; 
+        winnerText.style.color=(winner==="MERAH")?"#ff3b3b":"#2ea8ff"; 
+    }
+
+    winSound.currentTime=0; 
+    winSound.play().catch(()=>{});
+    startFireworks();
+
+    // Disable tombol restart sementara
+    btnRestart.style.display="block";
+    btnRestart.disabled = true;
+
+    // Delay kecil sebelum tampil interstitial
+    setTimeout(() => {
+        console.log("Interstitial ready?", interstitialReady);
+        if(interstitialReady && window.admob && admob.interstitial){
+            admob.interstitial.show()
+              .then(() => {
+                  console.log("Interstitial displayed!");
+                  interstitialReady = false; // reset flag
+                  preloadInterstitial();     // preload untuk race berikutnya
+                  btnRestart.disabled = false;
+              })
+              .catch(err => {
+                  console.log("Interstitial show error:", err);
+                  btnRestart.disabled = false;
+              });
+        } else {
+            console.log("Interstitial not ready yet");
+            btnRestart.disabled = false; // tetap enable tombol jika iklan belum siap
+        }
+    }, 500); // 0.5 detik delay, bisa diubah
 }
+
 
 // ================= RESTART =================
 btnRestart.onclick=()=> {
@@ -244,3 +259,4 @@ document.addEventListener('deviceready', () => {
 
 // ================= START =================
 showQuestion();
+
