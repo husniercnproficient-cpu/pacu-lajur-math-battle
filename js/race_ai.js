@@ -2,7 +2,6 @@
 const hamburger = document.getElementById("hamburger");
 const menuItems = document.getElementById("menuItems");
 
-
 document.getElementById("menuHome").onclick = () => location.href = "index.html";
 document.getElementById("menuSettings").onclick = () => location.href = "setting.html";
 document.getElementById("menuRefresh").onclick = () => resetGame();
@@ -85,7 +84,6 @@ function showQuestion() {
   }
   answers.sort(() => Math.random() - 0.5);
 
-  // kosongkan pilihan
   choicesRed.innerHTML = "";
   choicesBlue.innerHTML = "";
 
@@ -94,19 +92,12 @@ function showQuestion() {
     choicesBlue.appendChild(createBtn("blue", val));
   });
 
-  // ✅ Update label AI
   const aiLabel = document.getElementById("aiLabel");
   aiLabel.style.display = "block";  
   aiLabel.textContent = `AI: ${systemLevel.charAt(0).toUpperCase() + systemLevel.slice(1)}`;
 
-  // AI jawab otomatis
   aiAnswer();
 }
-
-
-
-
-
 
 function createBtn(player,val){
   const btn=document.createElement("button");
@@ -143,7 +134,7 @@ function aiAnswer(){
   const correctBtn = buttons.find(b=>parseInt(b.textContent)===currentAnswer);
   const delay = 500 + Math.random()*500;
 
-  aiTimeout = setTimeout(()=>{
+  aiTimeout = setTimeout(()=> {
     if(gameOver) return;
     if(Math.random()<=chance && correctBtn){ answer("blue",currentAnswer,correctBtn); }
     else{
@@ -165,27 +156,66 @@ function checkFinishOrNext(){
   showQuestion();
 }
 
+// ================= INTERSTITIAL ADMOB =================
+let interstitialReady = false;
+function preloadInterstitial() {
+    if (window.admob && admob.interstitial) {
+        admob.interstitial.config({ testing: true });
+        admob.interstitial.prepare({ id: 'ca-app-pub-3940256099942544/1033173712', autoShow: false })
+            .then(() => { interstitialReady = true; })
+            .catch(err => console.log("Interstitial load error:", err));
+    }
+}
+
 // ================= FINISH =================
 function finish(winner){
   if(gameOver) return;
   gameOver=true;
-
   if(aiTimeout){ clearTimeout(aiTimeout); aiTimeout=null; }
 
-  questionCenter.style.display="none"; choicesRed.style.display="none"; choicesBlue.style.display="none"; hamburger.style.display="none";
-  winOverlay.style.display="flex"; winnerText.style.display="block";
+  questionCenter.style.display="none"; 
+  choicesRed.style.display="none"; 
+  choicesBlue.style.display="none"; 
+  hamburger.style.display="none";
+  winOverlay.style.display="flex"; 
+  winnerText.style.display="block";
 
-  if(winner==="SERI"){ winnerText.textContent="SERI"; winnerText.style.color="#ffffff"; }
-  else{ winnerText.textContent=`${winner} MENANG!`; winnerText.style.color=(winner==="MERAH")?"#ff3b3b":"#2ea8ff"; }
-  winSound.currentTime=0; winSound.play().catch(()=>{});
+  if(winner==="SERI"){ 
+      winnerText.textContent="SERI"; 
+      winnerText.style.color="#ffffff"; 
+  }
+  else{ 
+      winnerText.textContent=`${winner} MENANG!`; 
+      winnerText.style.color=(winner==="MERAH")?"#ff3b3b":"#2ea8ff"; 
+  }
+
+  winSound.currentTime=0; 
+  winSound.play().catch(()=>{});
   startFireworks();
   btnRestart.style.display="block";
+  btnRestart.disabled = true;
+
+  // Tampilkan interstitial jika siap
+  if(interstitialReady && window.admob && admob.interstitial){
+      admob.interstitial.show().then(() => {
+          btnRestart.disabled = false;
+          preloadInterstitial(); // preload untuk race berikutnya
+      }).catch(err => {
+          console.log("Interstitial show error:", err);
+          btnRestart.disabled = false;
+      });
+  } else {
+      btnRestart.disabled = false;
+  }
 }
 
 // ================= RESTART =================
-btnRestart.onclick=()=>{
-  winOverlay.style.display="none"; questionCenter.style.display="block";
-  choicesRed.style.display="flex"; choicesBlue.style.display="flex"; hamburger.style.display="flex";
+btnRestart.onclick=()=> {
+  winOverlay.style.display="none"; 
+  questionCenter.style.display="block";
+  choicesRed.style.display="flex"; 
+  choicesBlue.style.display="flex"; 
+  hamburger.style.display="flex";
   stopFireworks(); winSound.pause(); winSound.currentTime=0;
   if(aiTimeout){ clearTimeout(aiTimeout); aiTimeout=null; }
   resetGame();
@@ -199,41 +229,18 @@ function resetGame(){
   winnerText.style.display="none"; btnRestart.style.display="none";
   particles=[]; ctx.clearRect(0,0,canvas.width,canvas.height);
 
-
-// Reset AI Label
   const aiLabel = document.getElementById("aiLabel");
-  aiLabel.style.display = "block";  // pastikan muncul
+  aiLabel.style.display = "block";  
   aiLabel.textContent = `AI: ${systemLevel.charAt(0).toUpperCase() + systemLevel.slice(1)}`;
-
-
 
   if(aiTimeout){ clearTimeout(aiTimeout); aiTimeout=null; }
   showQuestion();
 }
 
-// ================= ADMOB BANNER =================
-function showAdBanner() {
-    if (window.admob && admob.banner) {
-        // Aktifkan test ads
-        admob.banner.config({ testing: true });
-
-        // Tampilkan banner
-        admob.banner.show({
-            id: 'ca-app-pub-3940256099942544/6300978111', // contoh test ID AdMob
-            position: 'bottom',
-            autoShow: true
-        });
-    }
-}
-
-// Jalankan AdMob saat device siap
+// Jalankan preload interstitial saat device siap
 document.addEventListener('deviceready', () => {
-    showAdBanner();
+    preloadInterstitial();
 });
-
-
-
 
 // ================= START =================
 showQuestion();
-
